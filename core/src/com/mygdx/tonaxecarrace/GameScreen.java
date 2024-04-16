@@ -35,7 +35,7 @@ public class GameScreen {
         for (Car car : cars) {
             car.update();
         }
-        batch.draw(road.getTexture(), 0, 0);
+        batch.draw(road.getTextureRegion(), 0, 0); // Aquí deberías usar getTextureRegion()
         batch.draw(playerCar.getTexture(), playerCar.getPosition().x, playerCar.getPosition().y);
         for (Car car : cars) {
             batch.draw(car.getTexture(), car.getPosition().x, car.getPosition().y);

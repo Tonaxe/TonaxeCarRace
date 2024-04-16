@@ -17,6 +17,7 @@ public class MainGame extends ApplicationAdapter {
         float screenHeight = Gdx.graphics.getHeight();
         camera = new OrthographicCamera(screenWidth, screenHeight);
         camera.setToOrtho(false);
+        camera.setToOrtho(false, 1080, 1920);
         batch = new SpriteBatch();
         gameScreen = new GameScreen(camera);
     }
@@ -28,9 +29,8 @@ public class MainGame extends ApplicationAdapter {
         camera.update();
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
-        gameScreen.render(batch);
+        gameScreen.render(batch); // Asegúrate de llamar al método render de GameScreen
         batch.end();
-
         handleInput(); // Manejar la entrada del usuario
     }
 
