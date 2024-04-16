@@ -35,12 +35,13 @@ public class GameScreen {
         for (Car car : cars) {
             car.update();
         }
-        batch.draw(road.getTextureRegion(), 0, 0); // Aquí deberías usar getTextureRegion()
+        road.render(batch); // Utilizamos el método render de Road
         batch.draw(playerCar.getTexture(), playerCar.getPosition().x, playerCar.getPosition().y);
         for (Car car : cars) {
             batch.draw(car.getTexture(), car.getPosition().x, car.getPosition().y);
         }
     }
+
 
     public void dispose() {
         playerCar.dispose();

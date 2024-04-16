@@ -2,25 +2,29 @@ package com.mygdx.tonaxecarrace;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class Road {
     private static final String TEXTURE_PATH = "road.png";
     private Texture texture;
-    private TextureRegion textureRegion;
-    private float yPosition; // Posición vertical de la carretera
+    private TextureRegion[] textureRegions; // Array para mantener múltiples regiones de textura
+    private float[] yPositions; // Array para mantener las posiciones verticales de las regiones
+    private int numRoads; // Número de instancias de la carretera
 
 
     public Road() {
         texture = new Texture(Gdx.files.internal(TEXTURE_PATH));
-        float aspectRatio = (float) Gdx.graphics.getWidth() / (float) texture.getWidth();
-        int newHeight = (int) (texture.getHeight() * aspectRatio);
-        textureRegion = new TextureRegion(texture, 0, 0, Gdx.graphics.getWidth(), newHeight);
-        yPosition = Gdx.graphics.getHeight();
-    }
+        int screenHeight = Gdx.graphics.getHeight();
+        numRoads = (screenHeight / texture.getHeight()) + 2; // Calculamos el número necesario de instancias de la carretera
+        textureRegions = new TextureRegion[numRoads];
+        yPositions = new float[numRoads];
 
-    public TextureRegion getTextureRegion() {
-        return textureRegion;
+        // Inicializamos las instancias de la carretera y sus posiciones
+        for (int i = 0; i < numRoads; i++) {
+            textureRegions[i] = new TextureRegion(texture);
+            yPositions[i] = i * texture.getHeight(); // Posición inicial
+        }
     }
 
     public void dispose() {
@@ -32,20 +36,22 @@ public class Road {
     }
 
     public void update() {
-        // Mover la carretera hacia abajo
-        yPosition -= 5; // Puedes ajustar la velocidad de desplazamiento según sea necesario
+        for (int i = 0; i < numRoads; i++) {
+            yPositions[i] -= 5; // Desplazar hacia arriba
 
-        // Si la carretera se ha movido fuera de la pantalla, reposicionarla en la parte superior
-        if (yPosition <= -1920) { // La altura de la pantalla es 1920px
-            yPosition = 1920; // Reposicionar en la parte superior
+            // Si la carretera se ha movido fuera de la pantalla, reposicionarla encima de la última
+            if (yPositions[i] <= -texture.getHeight()) {
+                yPositions[i] = yPositions[(i + numRoads - 1) % numRoads] + texture.getHeight();
+            }
         }
+    }
 
-        // Actualizar la región de textura con la nueva posición vertical
-        textureRegion.setRegion(0, (int) yPosition, 1080, 1920);
-
-        // Si la textura ha alcanzado el borde superior de la pantalla, repetirla arriba
-        if (yPosition + 1920 <= 0) {
-            yPosition += 1920;
+    public void render(SpriteBatch batch) {
+        for (int i = 0; i < numRoads; i++) {
+            batch.draw(texture, 0, yPositions[i]);
+            if (i == 0) {
+                batch.draw(texture, 0, yPositions[numRoads - 1] + texture.getHeight());
+            }
         }
     }
 }
