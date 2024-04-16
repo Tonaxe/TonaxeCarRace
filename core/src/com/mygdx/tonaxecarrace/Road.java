@@ -5,12 +5,17 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Road {
     private static final String TEXTURE_PATH = "road.png";
     private Texture texture;
     private TextureRegion[] textureRegions; // Array para mantener múltiples regiones de textura
     private float[] yPositions; // Array para mantener las posiciones verticales de las regiones
     private int numRoads; // Número de instancias de la carretera
+    private List<Integer> completedRoads;
+
 
 
     public Road() {
@@ -19,6 +24,8 @@ public class Road {
         numRoads = (screenHeight / texture.getHeight()) + 2; // Calculamos el número necesario de instancias de la carretera
         textureRegions = new TextureRegion[numRoads];
         yPositions = new float[numRoads];
+        completedRoads = new ArrayList<>();
+
 
         // Inicializamos las instancias de la carretera y sus posiciones
         for (int i = 0; i < numRoads; i++) {
@@ -36,14 +43,21 @@ public class Road {
     }
 
     public void update() {
+        // Mover las instancias de la carretera hacia abajo
         for (int i = 0; i < numRoads; i++) {
-            yPositions[i] -= 5; // Desplazar hacia arriba
+            yPositions[i] -= 5; // Velocidad de desplazamiento ajustable
 
-            // Si la carretera se ha movido fuera de la pantalla, reposicionarla encima de la última
+            // Si la carretera completa ha pasado por debajo de la pantalla, marcarla como completada
             if (yPositions[i] <= -texture.getHeight()) {
-                yPositions[i] = yPositions[(i + numRoads - 1) % numRoads] + texture.getHeight();
+                completedRoads.add(i);
             }
         }
+
+        // Eliminar las instancias de la carretera completadas
+        for (int completedRoadIndex : completedRoads) {
+            yPositions[completedRoadIndex] = yPositions[(completedRoadIndex + numRoads - 1) % numRoads] + texture.getHeight();
+        }
+        completedRoads.clear(); // Limpiar la lista de instancias de carretera completadas
     }
 
     public void render(SpriteBatch batch) {
