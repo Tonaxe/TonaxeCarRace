@@ -33,4 +33,3 @@ public class Car {
         texture.dispose();
     }
 }
-
