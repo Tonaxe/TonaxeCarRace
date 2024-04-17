@@ -46,31 +46,26 @@ public class GameOverScreen implements Screen {
 
     @Override
     public void resume() {
-        // Cuando la aplicación se reanuda desde un estado pausado, asegúrate de que el Batch esté activo.
         batch = new SpriteBatch();
     }
 
     @Override
     public void pause() {
-        // Cuando la aplicación se pausa, liberamos recursos.
         batch.dispose();
     }
 
     @Override
     public void hide() {
-        // Liberamos recursos cuando la pantalla ya no está visible.
         dispose();
     }
 
     @Override
     public void show() {
-        // Al mostrar la pantalla, creamos un nuevo Batch.
         batch = new SpriteBatch();
     }
 
     @Override
     public void resize(int width, int height) {
-        // Este método se llama cuando se cambia el tamaño de la pantalla.
         camera.setToOrtho(false, width, height);
     }
 }

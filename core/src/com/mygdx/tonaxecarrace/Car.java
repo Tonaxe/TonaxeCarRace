@@ -18,7 +18,6 @@ public class Car {
     }
 
     public void update() {
-        // Implementa la lógica de movimiento de los coches aquí
     }
 
     public Texture getTexture() {

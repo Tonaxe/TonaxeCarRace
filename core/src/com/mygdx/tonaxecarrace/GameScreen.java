@@ -14,14 +14,15 @@ public class GameScreen {
     private OrthographicCamera camera;
     private Game game;
     private MainGame mainGame; // Agregar una referencia a MainGame
+    private GameOverScreen gameOverScreen; // Agregar una referencia a GameOverScreen
 
     private PlayerCar playerCar;
     private Road road;
     private List<Car> cars;
     private Random random;
 
-    private static final float TOUCH_LEFT_THRESHOLD = (float) Gdx.graphics.getWidth() / 2; // Umbral de la mitad de la pantalla
-    private static final float TOUCH_RIGHT_THRESHOLD = (float) Gdx.graphics.getWidth() / 2;
+    private static final float TOUCH_LEFT_THRESHOLD = (float) Gdx.graphics.getWidth() / 2; // Umbral de la mitad de la pantalla izquierda
+    private static final float TOUCH_RIGHT_THRESHOLD = (float) Gdx.graphics.getWidth() / 2; // Umbral de la mitad de la pantalla derecha
 
     private float timeSinceLastCar; // Tiempo transcurrido desde que se agregó el último coche
     private static final float TIME_BETWEEN_CARS = 2.0f; // Tiempo entre la aparición de cada coche
@@ -30,6 +31,8 @@ public class GameScreen {
     public GameScreen(OrthographicCamera camera, Game game) {
         this.camera = camera;
         this.game = game; // Almacenar la referencia al juego
+        this.mainGame = (MainGame) game; // Obtener la referencia a MainGame
+        this.gameOverScreen = ((MainGame) game).gameOverScreen; // Obtener la referencia a gameOverScreen desde MainGame
         camera.setToOrtho(false, 1080, 1920);
         playerCar = new PlayerCar();
         road = new Road();
@@ -48,6 +51,15 @@ public class GameScreen {
         for (Car car : cars) {
             batch.draw(car.getTexture(), car.getPosition().x, car.getPosition().y);
         }
+
+        for (Car car : cars) {
+            if (playerCar.collidesWith(car)) {
+                // Colisión detectada, cambiar a la pantalla de Game Over
+                game.setScreen(gameOverScreen);
+                break;
+            }
+        }
+
     }
 
 
@@ -86,8 +98,6 @@ public class GameScreen {
             addRandomCar(); // Agregar un nuevo coche a intervalos regulares
             timeSinceLastCar = 0; // Reiniciar el temporizador
         }
-
-        checkCollisions(); // Comprobar colisiones
     }
 
     private void addRandomCar() {
@@ -110,21 +120,5 @@ public class GameScreen {
 
         // Agregar un nuevo coche en la posición determinada
         cars.add(new Car(new Vector2(xPosition, 1920)));
-    }
-
-    public void checkCollisions() {
-        for (Car car : cars) {
-            if (playerCar.collidesWith(car)) {
-                // Colisión detectada, cambiar a la pantalla de Game Over
-                gameOver();
-                break;
-            }
-        }
-    }
-
-    private void gameOver() {
-        // Cambiar a la pantalla de Game Over
-        game.setScreen(new GameOverScreen(game)); // Suponiendo que `game` es una referencia a tu instancia de `MainGame`
-        // Este método debe implementarse de acuerdo a cómo manejes las pantallas en tu juego
     }
 }

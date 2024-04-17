@@ -9,6 +9,7 @@ public class MainGame extends Game {
     private OrthographicCamera camera;
     private SpriteBatch batch;
     private GameScreen gameScreen;
+    GameOverScreen gameOverScreen;
 
     @Override
     public void create() {
@@ -19,6 +20,7 @@ public class MainGame extends Game {
         camera.setToOrtho(false, 1080, 1920);
         batch = new SpriteBatch();
         gameScreen = new GameScreen(camera, this); // Pasar la referencia al juego
+        gameOverScreen = new GameOverScreen(this); // Asegurarse de que gameOverScreen esté inicializado
     }
 
     @Override
@@ -33,7 +35,6 @@ public class MainGame extends Game {
         handleInput(); // Manejar la entrada del usuario
         float delta = Gdx.graphics.getDeltaTime(); // Obtener el tiempo transcurrido desde el último fotograma
         gameScreen.update(delta); // Llamar al método update de GameScreen con el delta
-        gameScreen.checkCollisions(); // Verificar las colisiones después de actualizar
     }
 
     private void handleInput() {
