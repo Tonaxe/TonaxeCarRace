@@ -2,6 +2,7 @@ package com.mygdx.tonaxecarrace;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -10,29 +11,29 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class GameScreen {
+public class GameScreen implements Screen {
     private OrthographicCamera camera;
     private Game game;
-    private MainGame mainGame; // Agregar una referencia a MainGame
-    private GameOverScreen gameOverScreen; // Agregar una referencia a GameOverScreen
+    private MainGame mainGame;
+    private GameOverScreen gameOverScreen;
 
     private PlayerCar playerCar;
     private Road road;
     private List<Car> cars;
     private Random random;
 
-    private static final float TOUCH_LEFT_THRESHOLD = (float) Gdx.graphics.getWidth() / 2; // Umbral de la mitad de la pantalla izquierda
-    private static final float TOUCH_RIGHT_THRESHOLD = (float) Gdx.graphics.getWidth() / 2; // Umbral de la mitad de la pantalla derecha
+    private static final float TOUCH_LEFT_THRESHOLD = (float) Gdx.graphics.getWidth() / 2;
+    private static final float TOUCH_RIGHT_THRESHOLD = (float) Gdx.graphics.getWidth() / 2;
 
-    private float timeSinceLastCar; // Tiempo transcurrido desde que se agregó el último coche
-    private static final float TIME_BETWEEN_CARS = 2.0f; // Tiempo entre la aparición de cada coche
+    private float timeSinceLastCar;
+    private static final float TIME_BETWEEN_CARS = 2.0f;
 
 
     public GameScreen(OrthographicCamera camera, Game game) {
         this.camera = camera;
-        this.game = game; // Almacenar la referencia al juego
-        this.mainGame = (MainGame) game; // Obtener la referencia a MainGame
-        this.gameOverScreen = ((MainGame) game).gameOverScreen; // Obtener la referencia a gameOverScreen desde MainGame
+        this.game = game;
+        this.mainGame = (MainGame) game;
+        //.gameOverScreen = ((MainGame) game).gameOverScreen;
         camera.setToOrtho(false, 1080, 1920);
         playerCar = new PlayerCar();
         road = new Road();
@@ -40,13 +41,13 @@ public class GameScreen {
         random = new Random();
     }
 
-    public void render(SpriteBatch batch) {
+   /* public void render(SpriteBatch batch) {
         playerCar.update();
         road.update();
         for (Car car : cars) {
             car.update();
         }
-        road.render(batch); // Utilizamos el método render de Road
+        road.render(batch);
         batch.draw(playerCar.getTexture(), playerCar.getPosition().x, playerCar.getPosition().y);
         for (Car car : cars) {
             batch.draw(car.getTexture(), car.getPosition().x, car.getPosition().y);
@@ -54,14 +55,67 @@ public class GameScreen {
 
         for (Car car : cars) {
             if (playerCar.collidesWith(car)) {
-                // Colisión detectada, cambiar a la pantalla de Game Over
+                gameOverScreen = new GameOverScreen(game);
                 game.setScreen(gameOverScreen);
+                dispose();
                 break;
             }
         }
+    }*/
+
+
+    @Override
+    public void show() {
 
     }
 
+    @Override
+    public void render(float delta) {
+        update(delta);
+
+        mainGame.batch.setProjectionMatrix(camera.combined);
+        playerCar.update();
+        road.update();
+        for (Car car : cars) {
+            car.update();
+        }
+        mainGame.batch.begin();
+        road.render(mainGame.batch);
+        mainGame.batch.draw(playerCar.getTexture(), playerCar.getPosition().x, playerCar.getPosition().y);
+        for (Car car : cars) {
+            mainGame.batch.draw(car.getTexture(), car.getPosition().x, car.getPosition().y);
+        }
+        mainGame.batch.end();
+
+        for (Car car : cars) {
+            if (playerCar.collidesWith(car)) {
+                gameOverScreen = new GameOverScreen(game);
+                game.setScreen(gameOverScreen);
+                dispose();
+                break;
+            }
+        }
+    }
+
+    @Override
+    public void resize(int width, int height) {
+
+    }
+
+    @Override
+    public void pause() {
+
+    }
+
+    @Override
+    public void resume() {
+
+    }
+
+    @Override
+    public void hide() {
+
+    }
 
     public void dispose() {
         playerCar.dispose();
@@ -72,11 +126,9 @@ public class GameScreen {
     }
 
     public void handleInput(float touchX) {
-        // Si el jugador toca la parte izquierda de la pantalla, mueve el coche hacia la izquierda
         if (touchX < TOUCH_LEFT_THRESHOLD) {
             playerCar.moveLeft();
         }
-        // Si el jugador toca la parte derecha de la pantalla, mueve el coche hacia la derecha
         else if (touchX > TOUCH_RIGHT_THRESHOLD) {
             playerCar.moveRight();
         }
@@ -87,24 +139,18 @@ public class GameScreen {
         road.update();
         for (Car car : cars) {
             car.update();
-            car.getPosition().y -= 5; // Mover hacia abajo con la misma velocidad que el fondo
+            car.getPosition().y -= 5;
         }
-
-        // Incrementar el temporizador
         timeSinceLastCar += delta;
 
-        // Si ha pasado suficiente tiempo, añadir un nuevo coche
         if (timeSinceLastCar >= TIME_BETWEEN_CARS) {
-            addRandomCar(); // Agregar un nuevo coche a intervalos regulares
-            timeSinceLastCar = 0; // Reiniciar el temporizador
+            addRandomCar();
+            timeSinceLastCar = 0;
         }
     }
 
     private void addRandomCar() {
-        // Generar un número aleatorio para determinar el carril del nuevo coche
         int lane = random.nextInt(3); // 0, 1 o 2
-
-        // Determinar la posición x del nuevo coche según el carril
         float xPosition = 0;
         switch (lane) {
             case 0:
@@ -117,8 +163,6 @@ public class GameScreen {
                 xPosition = 644;
                 break;
         }
-
-        // Agregar un nuevo coche en la posición determinada
         cars.add(new Car(new Vector2(xPosition, 1920)));
     }
 }

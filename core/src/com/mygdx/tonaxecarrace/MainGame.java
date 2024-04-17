@@ -7,9 +7,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.Game;
 public class MainGame extends Game {
     private OrthographicCamera camera;
-    private SpriteBatch batch;
+    public SpriteBatch batch;
     private GameScreen gameScreen;
-    GameOverScreen gameOverScreen;
+    //GameOverScreen gameOverScreen;
 
     @Override
     public void create() {
@@ -19,28 +19,31 @@ public class MainGame extends Game {
         camera.setToOrtho(false);
         camera.setToOrtho(false, 1080, 1920);
         batch = new SpriteBatch();
-        gameScreen = new GameScreen(camera, this); // Pasar la referencia al juego
-        gameOverScreen = new GameOverScreen(this); // Asegurarse de que gameOverScreen esté inicializado
+        gameScreen = new GameScreen(camera, this);
+        setScreen(gameScreen);
+        //gameOverScreen = new GameOverScreen(this);
     }
 
     @Override
     public void render() {
-        Gdx.gl.glClearColor(0, 0, 0, 1);
+        super.render();
+        handleInput();
+        /*Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         camera.update();
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
-        gameScreen.render(batch); // Asegúrate de llamar al método render de GameScreen
+        gameScreen.render(batch);
         batch.end();
-        handleInput(); // Manejar la entrada del usuario
-        float delta = Gdx.graphics.getDeltaTime(); // Obtener el tiempo transcurrido desde el último fotograma
-        gameScreen.update(delta); // Llamar al método update de GameScreen con el delta
+        handleInput();
+        float delta = Gdx.graphics.getDeltaTime();
+        gameScreen.update(delta);*/
     }
 
     private void handleInput() {
         if (Gdx.input.isTouched()) {
             float touchX = Gdx.input.getX();
-            gameScreen.handleInput(touchX); // Pasar la posición del toque a GameScreen
+            gameScreen.handleInput(touchX);
         }
     }
 
