@@ -49,4 +49,28 @@ public class PlayerCar {
     public void dispose() {
         texture.dispose();
     }
+
+    public boolean collidesWith(Car car) {
+        // Obtener los límites de la textura del jugador
+        float playerLeft = position.x;
+        float playerRight = position.x + texture.getWidth();
+        float playerTop = position.y + texture.getHeight();
+        float playerBottom = position.y;
+
+        // Obtener los límites de la textura del otro coche
+        float carLeft = car.getPosition().x;
+        float carRight = car.getPosition().x + car.getTexture().getWidth();
+        float carTop = car.getPosition().y + car.getTexture().getHeight();
+        float carBottom = car.getPosition().y;
+
+        // Verificar si hay una colisión
+        if (playerRight >= carLeft && playerLeft <= carRight && playerTop >= carBottom && playerBottom <= carTop) {
+            // Hay colisión
+            return true;
+        }
+
+        // No hay colisión
+        return false;
+    }
+
 }

@@ -45,7 +45,7 @@ public class Road {
     public void update() {
         // Mover las instancias de la carretera hacia abajo
         for (int i = 0; i < numRoads; i++) {
-            yPositions[i] -= 5; // Velocidad de desplazamiento ajustable
+            yPositions[i] -= 2; // Velocidad de desplazamiento ajustable
 
             // Si la carretera completa ha pasado por debajo de la pantalla, marcarla como completada
             if (yPositions[i] <= -texture.getHeight()) {
