@@ -33,36 +33,12 @@ public class GameScreen implements Screen {
         this.camera = camera;
         this.game = game;
         this.mainGame = (MainGame) game;
-        //.gameOverScreen = ((MainGame) game).gameOverScreen;
         camera.setToOrtho(false, 1080, 1920);
         playerCar = new PlayerCar();
         road = new Road();
         cars = new ArrayList<>();
         random = new Random();
     }
-
-   /* public void render(SpriteBatch batch) {
-        playerCar.update();
-        road.update();
-        for (Car car : cars) {
-            car.update();
-        }
-        road.render(batch);
-        batch.draw(playerCar.getTexture(), playerCar.getPosition().x, playerCar.getPosition().y);
-        for (Car car : cars) {
-            batch.draw(car.getTexture(), car.getPosition().x, car.getPosition().y);
-        }
-
-        for (Car car : cars) {
-            if (playerCar.collidesWith(car)) {
-                gameOverScreen = new GameOverScreen(game);
-                game.setScreen(gameOverScreen);
-                dispose();
-                break;
-            }
-        }
-    }*/
-
 
     @Override
     public void show() {
@@ -87,6 +63,7 @@ public class GameScreen implements Screen {
         }
         mainGame.batch.end();
 
+
         for (Car car : cars) {
             if (playerCar.collidesWith(car)) {
                 gameOverScreen = new GameOverScreen(game);
@@ -95,6 +72,10 @@ public class GameScreen implements Screen {
                 break;
             }
         }
+    }
+
+    public void setCamera(OrthographicCamera camera) {
+        this.camera = camera;
     }
 
     @Override

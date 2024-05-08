@@ -21,23 +21,15 @@ public class MainGame extends Game {
         batch = new SpriteBatch();
         gameScreen = new GameScreen(camera, this);
         setScreen(gameScreen);
-        //gameOverScreen = new GameOverScreen(this);
+        gameScreen.setCamera(camera);
     }
 
     @Override
     public void render() {
         super.render();
         handleInput();
-        /*Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        camera.update();
-        batch.setProjectionMatrix(camera.combined);
-        batch.begin();
-        gameScreen.render(batch);
-        batch.end();
-        handleInput();
         float delta = Gdx.graphics.getDeltaTime();
-        gameScreen.update(delta);*/
+        gameScreen.update(delta);
     }
 
     private void handleInput() {
