@@ -8,7 +8,7 @@ import com.badlogic.gdx.Game;
 public class MainGame extends Game {
     private OrthographicCamera camera;
     public SpriteBatch batch;
-    private GameScreen gameScreen;
+    public GameScreen gameScreen;
     //GameOverScreen gameOverScreen;
 
     @Override
