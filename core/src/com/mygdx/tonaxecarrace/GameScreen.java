@@ -4,10 +4,12 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -16,11 +18,13 @@ public class GameScreen implements Screen {
     private Game game;
     private MainGame mainGame;
     private GameOverScreen gameOverScreen;
-
     private PlayerCar playerCar;
     private Road road;
     private List<Car> cars;
     private Random random;
+    private int score;
+    private BitmapFont font;
+    private SpriteBatch batch;
 
     private static final float TOUCH_LEFT_THRESHOLD = (float) Gdx.graphics.getWidth() / 2;
     private static final float TOUCH_RIGHT_THRESHOLD = (float) Gdx.graphics.getWidth() / 2;
@@ -38,6 +42,10 @@ public class GameScreen implements Screen {
         road = new Road();
         cars = new ArrayList<>();
         random = new Random();
+        score = 0;
+        font = new BitmapFont();
+        font.getData().setScale(3);
+        batch = new SpriteBatch();
     }
 
     @Override
@@ -52,15 +60,17 @@ public class GameScreen implements Screen {
         mainGame.batch.setProjectionMatrix(camera.combined);
         playerCar.update();
         road.update();
+        mainGame.batch.begin();
+        drawScore();
         for (Car car : cars) {
             car.update();
         }
-        mainGame.batch.begin();
         road.render(mainGame.batch);
         mainGame.batch.draw(playerCar.getTexture(), playerCar.getPosition().x, playerCar.getPosition().y);
         for (Car car : cars) {
             mainGame.batch.draw(car.getTexture(), car.getPosition().x, car.getPosition().y);
         }
+        drawScore();
         mainGame.batch.end();
 
 
@@ -77,6 +87,12 @@ public class GameScreen implements Screen {
     public void setCamera(OrthographicCamera camera) {
         this.camera = camera;
     }
+
+    private void drawScore() {
+        font.draw(mainGame.batch, "Score: " + score, 50, 1900);
+    }
+
+
 
     @Override
     public void resize(int width, int height) {
@@ -118,17 +134,29 @@ public class GameScreen implements Screen {
     public void update(float delta) {
         playerCar.update();
         road.update();
-        for (Car car : cars) {
-            car.update();
-            car.getPosition().y -= 5;
-        }
-        timeSinceLastCar += delta;
 
+        // Itera sobre los coches y actualiza su posición
+        Iterator<Car> iterator = cars.iterator();
+        while (iterator.hasNext()) {
+            Car car = iterator.next();
+            car.update();
+            car.getPosition().y -= 5; // Mueve el coche hacia abajo
+
+            // Elimina el coche si ha salido completamente de la pantalla
+            if (car.getPosition().y + Car.HEIGHT < -100) {
+                iterator.remove();
+                score++;
+            }
+        }
+
+        // Genera nuevos coches si es el momento
+        timeSinceLastCar += delta;
         if (timeSinceLastCar >= TIME_BETWEEN_CARS) {
             addRandomCar();
             timeSinceLastCar = 0;
         }
     }
+
 
     private void addRandomCar() {
         int lane = random.nextInt(3); // 0, 1 o 2
@@ -145,5 +173,6 @@ public class GameScreen implements Screen {
                 break;
         }
         cars.add(new Car(new Vector2(xPosition, 1920)));
+
     }
 }

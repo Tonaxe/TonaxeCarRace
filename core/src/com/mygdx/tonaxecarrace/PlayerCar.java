@@ -9,7 +9,6 @@ public class PlayerCar {
     private static final float SPEED = 10;
     private Texture texture;
     private Vector2 position;
-
     private float screenWidth;
 
     public PlayerCar() {
