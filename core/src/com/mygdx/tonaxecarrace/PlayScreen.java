@@ -6,23 +6,25 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class PlayScreen implements Screen {
     private Game game;
     private OrthographicCamera camera;
     private SpriteBatch batch;
-    private Texture playButtonTexture;
-    private float buttonX, buttonY;
+    private Texture backgroundTexture;
+    private BitmapFont font;
 
     public PlayScreen(Game game) {
         this.game = game;
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 1080, 1920);
         batch = new SpriteBatch();
-        playButtonTexture = new Texture(Gdx.files.internal("play_button.png")); // Usa la ruta correcta para tu botón de play
-        buttonX = (1080 - playButtonTexture.getWidth()) / 2;
-        buttonY = (1920 - playButtonTexture.getHeight()) / 2;
+        backgroundTexture = new Texture(Gdx.files.internal("road.png")); // Ruta a la textura de la carretera sin los coches
+        font = new BitmapFont();
+        font.getData().setScale(5); // Tamaño del texto
     }
 
     @Override
@@ -36,7 +38,17 @@ public class PlayScreen implements Screen {
 
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
-        batch.draw(playButtonTexture, buttonX, buttonY);
+
+        // Dibujar el fondo
+        batch.draw(backgroundTexture, 0, 0, 1080, 1920);
+
+        // Dibujar el texto "CLICK PARA JUGAR" centrado en la pantalla
+        GlyphLayout layout = new GlyphLayout();
+        layout.setText(font, "CLICK PARA JUGAR");
+        float textX = (1080 - layout.width) / 2;
+        float textY = (1920 + layout.height) / 2;
+        font.draw(batch, layout, textX, textY);
+
         batch.end();
 
         if (Gdx.input.justTouched()) {
@@ -46,7 +58,6 @@ public class PlayScreen implements Screen {
             dispose();
         }
     }
-
 
     @Override
     public void resize(int width, int height) {
@@ -67,6 +78,7 @@ public class PlayScreen implements Screen {
     @Override
     public void dispose() {
         batch.dispose();
-        playButtonTexture.dispose();
+        backgroundTexture.dispose();
+        font.dispose();
     }
 }

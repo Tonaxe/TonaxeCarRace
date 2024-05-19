@@ -15,12 +15,14 @@ public class GameOverScreen implements Screen {
     private OrthographicCamera camera;
     private SpriteBatch batch;
     private BitmapFont font;
+    private Texture backgroundTexture;
 
     public GameOverScreen(Game game) {
         this.game = game;
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 1080, 1920);
         batch = new SpriteBatch();
+        backgroundTexture = new Texture(Gdx.files.internal("road.png")); // Ruta a la textura de la carretera sin los coches
         font = new BitmapFont();
         font.getData().setScale(3);
     }
@@ -32,8 +34,9 @@ public class GameOverScreen implements Screen {
 
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
-        font.draw(batch, "Game Over", 400, 1000);
-        font.draw(batch, "Tap to Play Again", 350, 800);
+        batch.draw(backgroundTexture, 0, 0, 1080, 1920);
+        font.draw(batch, "GAME OVER", 400, 1000);
+        font.draw(batch, "JUGAR OTRA VEZ", 350, 800);
         batch.end();
 
         if (Gdx.input.justTouched()) {

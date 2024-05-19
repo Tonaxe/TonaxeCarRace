@@ -11,6 +11,7 @@ public class PlayerCar {
     private Vector2 position;
     private float screenWidth;
 
+
     public PlayerCar() {
         texture = new Texture(Gdx.files.internal(TEXTURE_PATH));
         screenWidth = Gdx.graphics.getWidth();
