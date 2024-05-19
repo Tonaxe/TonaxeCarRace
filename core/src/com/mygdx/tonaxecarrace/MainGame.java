@@ -22,6 +22,7 @@ public class MainGame extends Game {
         gameScreen = new GameScreen(camera, this);
         setScreen(gameScreen);
         gameScreen.setCamera(camera);
+        setScreen(new PlayScreen(this));
     }
 
     @Override
